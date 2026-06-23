@@ -258,7 +258,7 @@ async function runDetection(file) {
   const formData = new FormData();
   formData.append("image", file);
 
-  const res = await fetch("http://127.0.0.1:5000/predict", {
+  const res = await fetch("https://hostingtest-production-6905.up.railway.app/predict", {
     method: "POST",
     body: formData
   });
