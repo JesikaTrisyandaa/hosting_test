@@ -8,7 +8,7 @@ import io
 app = Flask(__name__)
 CORS(app)
 
-model = tf.keras.models.load_model(r"D:/Download/model_akurasi72.h5", compile=False)
+model = tf.keras.models.load_model(r"model_akurasi72.h5", compile=False)
 
 CLOUD_CLASSES = [
     "Altocumulus",
