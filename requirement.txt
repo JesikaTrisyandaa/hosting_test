@@ -1,0 +1,8 @@
+flask
+flask-cors
+tensorflow
+numpy
+pillow
+gunicorn
+h5py
+python-dotenv
