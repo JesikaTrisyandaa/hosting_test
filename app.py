@@ -8,7 +8,7 @@ import io
 app = Flask(__name__)
 CORS(app)
 
-model = tf.keras.models.load_model(r"model_akurasi72.h5", compile=False)
+model = tf.keras.models.load_model("model_akurasi72.h5", compile=False)
 
 CLOUD_CLASSES = [
     "Altocumulus",
@@ -24,11 +24,16 @@ CLOUD_CLASSES = [
     "Stratus"
 ]
 
+# Tambahkan ini
+@app.route("/")
+def home():
+    return "CloudVision API is running"
 
 
 @app.route("/predict", methods=["POST"])
 def predict():
     file = request.files["image"]
+
     img = Image.open(io.BytesIO(file.read())).convert("RGB")
     img = img.resize((224, 224))
 
@@ -41,11 +46,15 @@ def predict():
         {"class": CLOUD_CLASSES[i], "prob": float(probs[i])}
         for i in range(len(CLOUD_CLASSES))
     ]
-    predictions = sorted(predictions, key=lambda x: x["prob"], reverse=True)
+
+    predictions = sorted(
+        predictions,
+        key=lambda x: x["prob"],
+        reverse=True
+    )
 
     return jsonify({"predictions": predictions})
 
 
 if __name__ == "__main__":
     app.run(debug=True)
-
