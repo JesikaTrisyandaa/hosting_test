@@ -1,11 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import tensorflow as tf
 import numpy as np
 from PIL import Image
 import io
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=".", static_url_path="")
 CORS(app)
 
 model = tf.keras.models.load_model("model_akurasi72.h5", compile=False)
@@ -24,11 +25,9 @@ CLOUD_CLASSES = [
     "Stratus"
 ]
 
-# Tambahkan ini
 @app.route("/")
 def home():
-    return "CloudVision API is running"
-
+    return send_from_directory(".", "index.html")
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -47,14 +46,10 @@ def predict():
         for i in range(len(CLOUD_CLASSES))
     ]
 
-    predictions = sorted(
-        predictions,
-        key=lambda x: x["prob"],
-        reverse=True
-    )
+    predictions = sorted(predictions, key=lambda x: x["prob"], reverse=True)
 
     return jsonify({"predictions": predictions})
 
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
